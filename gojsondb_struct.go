@@ -7,5 +7,6 @@ type GoJsonDb struct {
 
 type Functions interface {
 	Load() (interface{}, error)
-	Select(tableName string, data interface{}) (interface{}, error)
+	Select(data interface{}, tableName string) (interface{}, error)
+	Where(data interface{}, key string, value interface{}) (interface{}, error)
 }

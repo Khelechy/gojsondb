@@ -4,9 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"reflect"
-	"log"
+	//"strconv"
 
 	"encoding/json"
 )
@@ -19,10 +20,15 @@ import (
 // 	}
 
 // 	usrs, err := db.Select("users")
-	
+
 // 	prettyPrint(usrs)
 
 // }
+
+type jsonarray struct {
+    data []interface{}
+}
+
 
 func (gojsondb *GoJsonDb) Load() (interface{}, error) {
 
@@ -47,7 +53,7 @@ func (gojsondb *GoJsonDb) Load() (interface{}, error) {
 	return dbObject, nil
 }
 
-func (gojsondb *GoJsonDb) Select(tableName string, data interface{}) (interface{}, error) {
+func (gojsondb *GoJsonDb) Select(data interface{}, tableName string, ) (interface{}, error) {
 
 	if data == nil {
 		return nil, errors.New("The preloaded data is null")
@@ -66,18 +72,35 @@ func (gojsondb *GoJsonDb) Select(tableName string, data interface{}) (interface{
 	}
 }
 
-// func (jsonDB interface{}) Where(key string, value interface{}) (map[string]interface{}, error){
-// 	if jsonDB == nil {
-// 		return nil, errors.New("The preloaded data is null")
-// 	}
+func (gojsondb *GoJsonDb) Where(data interface{}, key string, value interface{}) (interface{}, error) {
 
-// 	myMap := jsonDB.(map[string]interface{})
+	if data != nil {
+		newData, err := json.Marshal(data)
+		if err != nil {
+			fmt.Print("Cant unmashall")
+		}		
+        dataArray, err := parseData(newData)
+        var newDataArray []interface{}
+        for _, singleData := range dataArray.data {
+            dataMap := singleData.(map[string]interface{})
+			switch v := dataMap[key].(type){
+			case float64:
+				if int(v) == value {
+					newDataArray = append(newDataArray, singleData)
+				}
+			case string:
+				if v == value {
+					newDataArray = append(newDataArray, singleData)
+				}
+			}
+        }
+        return newDataArray, nil
+    } else {
+        return nil, errors.New("The preloaded data is null")
+    }
 
-// 	for k, v := range jsonDB{
-// 		fmt.Println("k:", k, "v:", v)
-// 	}
-// 	return nil, nil
-// }
+}
+
 
 // func (jsonDB *JsonDB) Add(table string, data interface{}) (interface{}, error) {
 // 	if jsonDB == nil {
@@ -105,4 +128,23 @@ func getProp(d interface{}, label string) (interface{}, bool) {
 		return v.Interface(), true
 	}
 	return nil, false
+}
+
+func parseData(data []byte) (dataArray *jsonarray, err error) {
+    if data != nil {
+        var token interface{}
+        err = json.Unmarshal(data, &token)
+        if err != nil {
+            return nil, err
+        }
+        switch token.(type) {
+        case []interface{}:
+            dataArray = &jsonarray{token.([]interface{})}
+            return dataArray, nil
+        default:
+            return nil, errors.New("The preloaded data is not a Json Array")
+        }
+    } else {
+        return nil, errors.New("The preloaded data is null")
+    }
 }

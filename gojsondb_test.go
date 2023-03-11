@@ -25,9 +25,27 @@ func TestSelect(t *testing.T){
 		}
 
 		data, err := a.Load()
-		value, err := a.Select("plans", data)
+		value, err := a.Select(data, "users")
 
 		prettyPrint(value)
+		
+		if err != nil {
+			t.Errorf("err: %v", err)
+		}
+	})
+}
+
+func TestWhere(t *testing.T){
+	t.Run("Run where", func(t *testing.T) {
+		a := GoJsonDb{
+			DataPath: "user.json",
+		}
+
+		data, err := a.Load()
+		value, err := a.Select(data, "users")
+		newValue, err := a.Where(value, "id", 1)
+
+		prettyPrint(newValue)
 		
 		if err != nil {
 			t.Errorf("err: %v", err)
