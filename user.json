@@ -1,25 +1,35 @@
 {
-    "users": [
-      {
-        "id": 1,
-        "firstname": "kelechi",
-        "lastname": "onyekwere",
-        "age": 19,
-        "verified": true
-      },
-      {
-        "id": 2,
-        "firstname": "john",
-        "lastname": "doe",
-        "age": 33,
-        "verified": true
-      },
-      {
-        "id": 3,
-        "firstname": "mark",
-        "lastname": "parker",
-        "age": 20,
-        "verified": false
-      }
-    ]
+  "users": [
+    {
+      "id": 1,
+      "firstname": "kelechi",
+      "lastname": "onyekwere",
+      "age": 19,
+      "verified": true
+    },
+    {
+      "id": 2,
+      "firstname": "john",
+      "lastname": "doe",
+      "age": 33,
+      "verified": true
+    },
+    {
+      "id": 3,
+      "firstname": "mark",
+      "lastname": "parker",
+      "age": 20,
+      "verified": false
+    }
+  ],
+  "plans": [
+    {
+      "id": 1,
+      "name": "silver"
+    },
+    {
+      "id": 2,
+      "name": "gold"
+    }
+  ]
 }
