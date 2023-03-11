@@ -43,7 +43,7 @@ func TestWhere(t *testing.T){
 
 		data, err := a.Load()
 		value, err := a.Select(data, "users")
-		newValue, err := a.Where(value, "id", 1)
+		newValue, err := a.Where(value, "verified", true)
 
 		prettyPrint(newValue)
 		

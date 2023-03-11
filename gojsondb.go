@@ -77,7 +77,7 @@ func (gojsondb *GoJsonDb) Where(data interface{}, key string, value interface{})
 	if data != nil {
 		newData, err := json.Marshal(data)
 		if err != nil {
-			fmt.Print("Cant unmashall")
+			fmt.Print("Can not unmarshal")
 		}		
         dataArray, err := parseData(newData)
         var newDataArray []interface{}
@@ -90,6 +90,10 @@ func (gojsondb *GoJsonDb) Where(data interface{}, key string, value interface{})
 				}
 			case string:
 				if v == value {
+					newDataArray = append(newDataArray, singleData)
+				}
+			case bool:
+				if bool(v) == value {
 					newDataArray = append(newDataArray, singleData)
 				}
 			}
