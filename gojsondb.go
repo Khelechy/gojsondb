@@ -106,13 +106,59 @@ func (gojsondb *GoJsonDb) Where(data interface{}, key string, value interface{})
 }
 
 
-// func (jsonDB *JsonDB) Add(table string, data interface{}) (interface{}, error) {
-// 	if jsonDB == nil {
-// 		return nil, errors.New("The preloaded data is null")
-// 	}
+func (gojsondb *GoJsonDb) Add(data interface{}, tableName string, newData interface{}) error {
+	
+	if data != nil {
+
+		v, ok := data.(map[string]interface{})
+		if !ok {
+			fmt.Println("not mappable")
+		}
+
+		var selectedData interface{}
+
+		if len(tableName) > 0 {
+			selectedData = v[tableName]
+		}else{
+			selectedData = v
+		}
+
+		dataBytes, err := json.Marshal(selectedData)
+		if err != nil {
+			fmt.Print("Can not unmarshal")
+		}		
+        dataArray, err := parseData(dataBytes)
+		if err != nil {
+			fmt.Println("Can not parse data")
+		}
+
+		//Transform New Data 
+		var finalData interface{}
+		newDataMap, ok := newData.(map[string]interface{})
+		if !ok {
+			fmt.Println("not mappable transform")
+			finalData = newDataMap
+		}else{
+			finalData = newData
+		}
+
+		//prettyPrint(newDataMap)
+
+		dataArray.data = append(dataArray.data, finalData)
+		writeData , err := json.Marshal(dataArray.data)
+		if err != nil {
+			fmt.Println("can not marshal write data")
+		}
+
+    	err = ioutil.WriteFile(gojsondb.DataPath, writeData, 0644)
+
+		return nil
+	}else {
+        return errors.New("The preloaded data is null")
+    }
 
 	
-// }
+}
 
 
 
